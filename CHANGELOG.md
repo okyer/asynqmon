@@ -33,6 +33,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 6. **SVG 处理**：将 SVG logo 内联为 React 组件（替代 CRA 的 `svgr` 语法）
 7. **Makefile**：简化构建命令适配 Vite
 
+### Fixed
+
+1. 修复 asynq v0.26.0 的 Redis Lua 脚本兼容性问题。
+
+**修改内容：** `vendor/github.com/hibiken/asynq/internal/rdb/inspect.go` 中的 `memoryUsageCmd` 脚本
+
+- **问题：** `redis.call("MEMORY", "USAGE", key)` 在 Redis 7.x 中 key 不存在时返回 `false`（boolean），脚本直接对其做算术运算导致 `attempt to perform arithmetic on local 'bytes' (a boolean value)`
+- **修复：** 对 3 处 `MEMORY USAGE` 的返回值统一加了 `tonumber()` 转换和 `if bytes then` 保护：
+  - 第 266 行：`local bytes = tonumber(redis.call("MEMORY", "USAGE", ARGV[1] .. id))`
+  - 第 283 行：`local bytes = tonumber(redis.call("MEMORY", "USAGE", ARGV[1] .. id))`
+  - 第 306 行：`local bytes = tonumber(redis.call("MEMORY", "USAGE", ARGV[1] .. id))`
+  - 对容器本身的 `MEMORY USAGE` 也加了 `tonumber()`（第 273、290 行）
+
+2. **前端：Vite 环境判断错误** — `ui/src/api.ts` 第 8 行
+   - 原代码：`import.meta.env.DEV === "production"`（永远 false）
+   - 修复为：`import.meta.env.DEV`（正确区分开发和生产环境）
+
+3. **前端：双斜杠 URL** — `ui/src/api.ts` `getBaseUrl()`
+   - 原代码：`window.ROOT_PATH = "/"` 时生成 `//api`
+   - 修复为：`const root = window.ROOT_PATH === "/" ? "" : window.ROOT_PATH;`
+
 ## [0.7.0] - 2022-04-11
 
 Version 0.7 added support for [Task Aggregation](https://github.com/hibiken/asynq/wiki/Task-aggregation) feature

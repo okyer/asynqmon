@@ -179,8 +179,8 @@ func main() {
 	srv := &http.Server{
 		Handler:      mux,
 		Addr:         fmt.Sprintf(":%d", cfg.Port),
-		WriteTimeout: 10 * time.Second,
-		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 60 * time.Second,
+		ReadTimeout:  30 * time.Second,
 	}
 
 	fmt.Printf("Asynq Monitoring WebUI server is listening on port %d\n", cfg.Port)
