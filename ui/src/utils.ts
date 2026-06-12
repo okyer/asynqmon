@@ -1,7 +1,14 @@
 import { AxiosError } from "axios";
 
+function isAxiosError(error: unknown): error is AxiosError<string> {
+  return (error as AxiosError).isAxiosError === true;
+}
+
 // toErrorStringWithHttpStatus returns a string representaion of axios error with HTTP status.
-export function toErrorStringWithHttpStatus(error: AxiosError<string>): string {
+export function toErrorStringWithHttpStatus(error: unknown): string {
+  if (!isAxiosError(error)) {
+    return String(error);
+  }
   const { response } = error;
   if (!response) {
     return "error: no error response data available";
@@ -10,7 +17,10 @@ export function toErrorStringWithHttpStatus(error: AxiosError<string>): string {
 }
 
 // toErrorString returns a string representaion of axios error.
-export function toErrorString(error: AxiosError<string>): string {
+export function toErrorString(error: unknown): string {
+  if (!isAxiosError(error)) {
+    return String(error);
+  }
   const { response } = error;
   if (!response) {
     return "Unknown error occurred. See the logs for details.";

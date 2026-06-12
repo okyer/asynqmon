@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
-import Container from "@material-ui/core/Container";
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import InfoIcon from "@material-ui/icons/Info";
-import Alert from "@material-ui/lab/Alert";
-import AlertTitle from "@material-ui/lab/AlertTitle";
+import Container from "@mui/material/Container";
+import { makeStyles } from "tss-react/mui";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import InfoIcon from "@mui/icons-material/Info";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 import {
   listQueuesAsync,
   pauseQueueAsync,
@@ -25,7 +25,7 @@ import SplitButton from "../components/SplitButton";
 import { usePolling } from "../hooks";
 import DailyStatsChart from "../components/DailyStatsChart";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
@@ -101,7 +101,7 @@ function DashboardView(props: Props) {
     listQueueStatsAsync,
     dailyStatsKey,
   } = props;
-  const classes = useStyles();
+  const { classes } = useStyles();
 
   usePolling(listQueuesAsync, pollInterval);
 
@@ -125,7 +125,7 @@ function DashboardView(props: Props) {
     <Container maxWidth="lg" className={classes.container}>
       <Grid container spacing={3}>
         {props.error.length > 0 && (
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <Alert severity="error">
               <AlertTitle>Error</AlertTitle>
               Could not retrieve queues live data —{" "}
@@ -133,7 +133,7 @@ function DashboardView(props: Props) {
             </Alert>
           </Grid>
         )}
-        <Grid item xs={6}>
+        <Grid xs={6}>
           <Paper className={classes.paper} variant="outlined">
             <div className={classes.chartHeader}>
               <div className={classes.chartHeaderTitle}>
@@ -177,7 +177,7 @@ function DashboardView(props: Props) {
           </Paper>
         </Grid>
 
-        <Grid item xs={6}>
+        <Grid xs={6}>
           <Paper className={classes.paper} variant="outlined">
             <div className={classes.chartHeader}>
               <div className={classes.chartHeaderTitle}>
@@ -234,7 +234,7 @@ function DashboardView(props: Props) {
           </Paper>
         </Grid>
 
-        <Grid item xs={12} className={classes.tableContainer}>
+        <Grid xs={12} className={classes.tableContainer}>
           <Paper className={classes.paper} variant="outlined">
             {/* TODO: Add loading indicator  */}
             <QueuesOverviewTable

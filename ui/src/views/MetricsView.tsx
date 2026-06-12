@@ -1,14 +1,15 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import queryString from "query-string";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import WarningIcon from "@material-ui/icons/Warning";
-import InfoIcon from "@material-ui/icons/Info";
+import { makeStyles } from "tss-react/mui";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import WarningIcon from "@mui/icons-material/Warning";
+import InfoIcon from "@mui/icons-material/Info";
 import prettyBytes from "pretty-bytes";
+// @ts-ignore - no type declarations for pretty-bytes
 import { getMetricsAsync } from "../actions/metricsActions";
 import { listQueuesAsync } from "../actions/queuesActions";
 import { AppState } from "../store";
@@ -19,7 +20,7 @@ import MetricsFetchControls from "../components/MetricsFetchControls";
 import { useQuery } from "../hooks";
 import { PrometheusMetricsResponse } from "../api";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     marginTop: 30,
     paddingTop: theme.spacing(4),
@@ -77,8 +78,8 @@ const ENDTIME_URL_PARAM_KEY = "end";
 const DURATION_URL_PARAM_KEY = "duration";
 
 function MetricsView(props: Props) {
-  const classes = useStyles();
-  const history = useHistory();
+  const { classes } = useStyles();
+  const navigate = useNavigate();
   const query = useQuery();
 
   const endTimeStr = query.get(ENDTIME_URL_PARAM_KEY);
@@ -89,9 +90,9 @@ function MetricsView(props: Props) {
 
   const { pollInterval, getMetricsAsync, listQueuesAsync, data } = props;
 
-  const [endTimeSec, setEndTimeSec] = React.useState(endTime);
-  const [durationSec, setDurationSec] = React.useState(duration);
-  const [selectedQueues, setSelectedQueues] = React.useState<string[]>([]);
+  const [endTimeSec, setEndTimeSec] = useState(endTime);
+  const [durationSec, setDurationSec] = useState(duration);
+  const [selectedQueues, setSelectedQueues] = useState<string[]>([]);
 
   const handleEndTimeChange = (endTime: number, isEndTimeFixed: boolean) => {
     const urlQuery = isEndTimeFixed
@@ -102,8 +103,8 @@ function MetricsView(props: Props) {
       : {
           [DURATION_URL_PARAM_KEY]: durationSec,
         };
-    history.push({
-      ...history.location,
+    navigate({
+      ...location,
       search: queryString.stringify(urlQuery),
     });
     setEndTimeSec(endTime);
@@ -118,8 +119,8 @@ function MetricsView(props: Props) {
       : {
           [DURATION_URL_PARAM_KEY]: duration,
         };
-    history.push({
-      ...history.location,
+    navigate({
+      ...location,
       search: queryString.stringify(urlQuery),
     });
     setDurationSec(duration);
@@ -145,11 +146,11 @@ function MetricsView(props: Props) {
     setSelectedQueues(selectedQueues.filter((q) => q !== qname));
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     listQueuesAsync();
   }, [listQueuesAsync]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     getMetricsAsync(endTimeSec, durationSec, selectedQueues);
   }, [pollInterval, getMetricsAsync, durationSec, endTimeSec, selectedQueues]);
 
@@ -172,7 +173,7 @@ function MetricsView(props: Props) {
       </div>
       <Grid container spacing={3}>
         {data?.tasks_processed_per_second && (
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <ChartRow
               title="Tasks Processed"
               description="Number of tasks processed (both succeeded and failed) per second."
@@ -183,7 +184,7 @@ function MetricsView(props: Props) {
           </Grid>
         )}
         {data?.tasks_failed_per_second && (
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <ChartRow
               title="Tasks Failed"
               description="Number of tasks failed per second."
@@ -194,7 +195,7 @@ function MetricsView(props: Props) {
           </Grid>
         )}
         {data?.error_rate && (
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <ChartRow
               title="Error Rate"
               description="Rate of task failures"
@@ -205,7 +206,7 @@ function MetricsView(props: Props) {
           </Grid>
         )}
         {data?.queue_size && (
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <ChartRow
               title="Queue Size"
               description="Total number of tasks in a given queue."
@@ -216,7 +217,7 @@ function MetricsView(props: Props) {
           </Grid>
         )}
         {data?.queue_latency_seconds && (
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <ChartRow
               title="Queue Latency"
               description="Latency of queue, measured by the oldest pending task in the queue."
@@ -228,7 +229,7 @@ function MetricsView(props: Props) {
           </Grid>
         )}
         {data?.queue_size && (
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <ChartRow
               title="Queue Memory Usage (approx)"
               description="Memory usage by queue. Approximate value by sampling a few tasks in a queue."
@@ -246,7 +247,7 @@ function MetricsView(props: Props) {
           </Grid>
         )}
         {data?.pending_tasks_by_queue && (
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <ChartRow
               title="Pending Tasks"
               description="Number of pending tasks in a given queue."
@@ -257,7 +258,7 @@ function MetricsView(props: Props) {
           </Grid>
         )}
         {data?.retry_tasks_by_queue && (
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <ChartRow
               title="Retry Tasks"
               description="Number of retry tasks in a given queue."
@@ -268,7 +269,7 @@ function MetricsView(props: Props) {
           </Grid>
         )}
         {data?.archived_tasks_by_queue && (
-          <Grid item xs={12}>
+          <Grid xs={12}>
             <ChartRow
               title="Archived Tasks"
               description="Number of archived tasks in a given queue."
@@ -297,7 +298,7 @@ interface ChartRowProps {
 }
 
 function ChartRow(props: ChartRowProps) {
-  const classes = useStyles();
+  const { classes } = useStyles();
   return (
     <>
       <div className={classes.chartInfo}>

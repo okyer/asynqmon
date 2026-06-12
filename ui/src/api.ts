@@ -5,7 +5,7 @@ import queryString from "query-string";
 // the static file server.
 // In developement, we assume that the API server is listening on port 8080.
 const getBaseUrl = () =>
-  process.env.NODE_ENV === "production"
+  import.meta.env.DEV === "production"
     ? `${window.ROOT_PATH}/api`
     : `http://localhost:8080${window.ROOT_PATH}/api`;
 
@@ -1083,3 +1083,4 @@ export async function getMetrics(
   });
   return resp.data;
 }
+

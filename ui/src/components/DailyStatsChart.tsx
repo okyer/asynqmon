@@ -1,4 +1,4 @@
-import React from "react";
+
 import {
   LineChart,
   Line,
@@ -9,7 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { useTheme, Theme } from "@material-ui/core/styles";
+import { useTheme, Theme } from "@mui/material/styles";
 import { DailyStat } from "../api";
 
 interface Props {

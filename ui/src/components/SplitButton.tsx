@@ -1,14 +1,14 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import ClickAwayListener from "@material-ui/core/ClickAwayListener";
-import Grow from "@material-ui/core/Grow";
-import Paper from "@material-ui/core/Paper";
-import Popper from "@material-ui/core/Popper";
-import MenuItem from "@material-ui/core/MenuItem";
-import MenuList from "@material-ui/core/MenuList";
+import { useState, MouseEvent } from "react";
+import { makeStyles } from "tss-react/mui";
+import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import Grow from "@mui/material/Grow";
+import Paper from "@mui/material/Paper";
+import Popper from "@mui/material/Popper";
+import MenuItem from "@mui/material/MenuItem";
+import MenuList from "@mui/material/MenuList";
 import { isDarkTheme } from "../theme";
 
 interface Option {
@@ -22,7 +22,7 @@ interface Props {
   onSelect: (key: string) => void;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   popper: {
     zIndex: 2,
   },
@@ -38,16 +38,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SplitButton(props: Props) {
-  const classes = useStyles();
-  const [open, setOpen] = React.useState<boolean>(false);
+  const { classes } = useStyles();
+  const [open, setOpen] = useState<boolean>(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
-  const [selectedKey, setSelectedKey] = React.useState<string>(
-    props.initialSelectedKey
+  const [selectedKey, setSelectedKey] = useState<string>(
+    props.initialSelectedKey,
   );
 
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
-    key: string
+    key: string,
   ) => {
     setSelectedKey(key);
     setOpen(false);

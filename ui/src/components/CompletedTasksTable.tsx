@@ -1,14 +1,14 @@
-import Checkbox from "@material-ui/core/Checkbox";
-import IconButton from "@material-ui/core/IconButton";
-import TableCell from "@material-ui/core/TableCell";
-import TableRow from "@material-ui/core/TableRow";
-import Tooltip from "@material-ui/core/Tooltip";
-import DeleteIcon from "@material-ui/icons/Delete";
-import FileCopyOutlinedIcon from "@material-ui/icons/FileCopyOutlined";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import React from "react";
+import Checkbox from "@mui/material/Checkbox";
+import IconButton from "@mui/material/IconButton";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import Tooltip from "@mui/material/Tooltip";
+import DeleteIcon from "@mui/icons-material/Delete";
+import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+
 import { connect, ConnectedProps } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { taskRowsPerPageChange } from "../actions/settingsActions";
 import {
   batchDeleteCompletedTasksAsync,
@@ -71,13 +71,13 @@ const columns: TableColumn[] = [
 function Row(props: RowProps) {
   const { task } = props;
   const classes = useRowStyles();
-  const history = useHistory();
+  const navigate = useNavigate();
   return (
     <TableRow
       key={task.id}
       className={classes.root}
       selected={props.isSelected}
-      onClick={() => history.push(taskDetailsPath(task.queue, task.id))}
+      onClick={() => navigate(taskDetailsPath(task.queue, task.id))}
     >
       {!window.READ_ONLY && (
         <TableCell padding="checkbox" onClick={(e) => e.stopPropagation()}>

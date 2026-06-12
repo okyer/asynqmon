@@ -1,31 +1,29 @@
-import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
-import { emphasize, withStyles, Theme } from "@material-ui/core/styles";
-import Breadcrumbs from "@material-ui/core/Breadcrumbs";
-import Chip from "@material-ui/core/Chip";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { emphasize, styled } from "@mui/material/styles";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Chip from "@mui/material/Chip";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { paths as getPaths, queueDetailsPath } from "../paths";
 import { isDarkTheme } from "../theme";
 
-const StyledBreadcrumb = withStyles((theme: Theme) => ({
-  root: {
-    backgroundColor: isDarkTheme(theme)
-      ? "#303030"
-      : theme.palette.background.default,
-    height: theme.spacing(3),
-    color: theme.palette.text.secondary,
-    fontWeight: 400,
-    "&:hover, &:focus": {
-      backgroundColor: theme.palette.action.hover,
-    },
-    "&:active": {
-      boxShadow: theme.shadows[1],
-      backgroundColor: emphasize(theme.palette.action.hover, 0.12),
-    },
+const StyledBreadcrumb = styled(Chip)(({ theme }) => ({
+  backgroundColor: isDarkTheme(theme)
+    ? "#303030"
+    : theme.palette.background.default,
+  height: theme.spacing(3),
+  color: theme.palette.text.secondary,
+  fontWeight: 400,
+  "&:hover, &:focus": {
+    backgroundColor: theme.palette.action.hover,
   },
-}))(Chip) as typeof Chip; // Note: need a type cast here because https://github.com/Microsoft/TypeScript/issues/26591
+  "&:active": {
+    boxShadow: theme.shadows[1],
+    backgroundColor: emphasize(theme.palette.action.hover, 0.12),
+  },
+})) as typeof Chip; // Note: need a type cast here because https://github.com/Microsoft/TypeScript/issues/26591
 
 interface Props {
   // All queue names.
@@ -37,7 +35,7 @@ interface Props {
 }
 
 export default function QueueBreadcrumbs(props: Props) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<null | Element>(null);
   const paths = getPaths();
 
@@ -57,7 +55,7 @@ export default function QueueBreadcrumbs(props: Props) {
           component={Link}
           to={paths.HOME}
           label="Queues"
-          onClick={() => history.push(paths.HOME)}
+          onClick={() => navigate(paths.HOME)}
         />
         <StyledBreadcrumb
           label={props.queueName}
@@ -78,7 +76,7 @@ export default function QueueBreadcrumbs(props: Props) {
           <MenuItem
             key={qname}
             onClick={() => {
-              history.push(queueDetailsPath(qname));
+              navigate(queueDetailsPath(qname));
               closeMenu();
             }}
           >

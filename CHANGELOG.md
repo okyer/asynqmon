@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-06-12
+
+### 核心升级内容
+
+| 技术栈 | 旧版本 | 新版本 |
+|--------|--------|--------|
+| 构建工具 | `react-scripts` 5.0.1 (CRA) | **Vite 6.4.3** |
+| React | 16.13.1 | **19.x** |
+| TypeScript | 4.2.4 | **5.7.x** |
+| MUI | `@material-ui` 4.12.3 | **`@mui/material` 6.4.0** |
+| React Router | 5.3.0 | **7.1.0** |
+| Redux Toolkit | 1.6.2 | **2.5.0** |
+| react-redux | 7.2.4 | **9.2.0** |
+| axios | 0.21.2 | **1.7.9** |
+| golang | 1.16.0 | 1.26.0 |
+
+### 关键变更
+
+1. **构建工具迁移**：从 Create React App 迁移到 Vite，启动更快，配置更简洁
+2. **MUI v4 → v6**：所有 `@material-ui/*` 包替换为 `@mui/material`，`makeStyles` 通过 `tss-react` 库兼容
+3. **React Router v5 → v7**：`Switch` → `Routes`，`useHistory` → `useNavigate`，移除 `useRouteMatch`
+4. **React 19**：使用 `createRoot` API，移除 `React` 默认导入
+5. **配置文件**：新增 `vite.config.ts`、`tsconfig.node.json`，更新 `tsconfig.json` 适配现代 TypeScript
+6. **SVG 处理**：将 SVG logo 内联为 React 组件（替代 CRA 的 `svgr` 语法）
+7. **Makefile**：简化构建命令适配 Vite
+
 ## [0.7.0] - 2022-04-11
 
 Version 0.7 added support for [Task Aggregation](https://github.com/hibiken/asynq/wiki/Task-aggregation) feature
@@ -80,3 +106,5 @@ Version 0.5 added support for [Prometheus](https://prometheus.io/) integration.
 ## [0.1.0-beta1] - 2021-01-31
 
 Initial Beta Release 🎉
+
+

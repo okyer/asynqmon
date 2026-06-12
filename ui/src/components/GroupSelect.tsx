@@ -1,14 +1,14 @@
-import React from "react";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
-import ListSubheader from "@material-ui/core/ListSubheader";
+import { useTheme } from "@mui/material/styles";
+import { makeStyles } from "tss-react/mui";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import ListSubheader from "@mui/material/ListSubheader";
 import { VariableSizeList, ListChildComponentProps } from "react-window";
 import { GroupInfo } from "../api";
 import { isDarkTheme } from "../theme";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   groupSelectOption: {
     display: "flex",
     justifyContent: "space-between",
@@ -39,8 +39,8 @@ interface Props {
 }
 
 export default function GroupSelect(props: Props) {
-  const classes = useStyles();
-  const [inputValue, setInputValue] = React.useState("");
+  const { classes } = useStyles();
+  const [inputValue, setInputValue] = useState("");
 
   return (
     <Autocomplete
@@ -103,7 +103,7 @@ const OuterElementType = React.forwardRef<HTMLDivElement>((props, ref) => {
 
 function useResetCache(data: any) {
   const ref = React.useRef<VariableSizeList>(null);
-  React.useEffect(() => {
+  useEffect(() => {
     if (ref.current != null) {
       ref.current.resetAfterIndex(0, true);
     }
@@ -156,5 +156,5 @@ const ListboxComponent = React.forwardRef<HTMLDivElement>(
         </OuterElementContext.Provider>
       </div>
     );
-  }
+  },
 );

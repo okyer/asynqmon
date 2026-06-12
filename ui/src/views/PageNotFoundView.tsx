@@ -1,10 +1,10 @@
-import React from "react";
-import Container from "@material-ui/core/Container";
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
 
-const useStyles = makeStyles((theme) => ({
+import Container from "@mui/material/Container";
+import { makeStyles } from "tss-react/mui";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+
+const useStyles = makeStyles()((theme) => ({
   container: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
@@ -15,11 +15,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function PageNotFoundView() {
-  const classes = useStyles();
+  const { classes } = useStyles();
   return (
     <Container maxWidth="lg" className={classes.container}>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <Typography
             variant="h5"
             align="center"

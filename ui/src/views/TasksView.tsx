@@ -1,15 +1,14 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "tss-react/mui";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
 import TasksTableContainer from "../components/TasksTableContainer";
 import QueueInfoBanner from "../components/QueueInfoBanner";
 import QueueBreadCrumb from "../components/QueueBreadcrumb";
 import { useParams } from "react-router-dom";
 import { listQueuesAsync } from "../actions/queuesActions";
 import { AppState } from "../store";
-import { QueueDetailsRouteParams } from "../paths";
 import { useQuery } from "../hooks";
 
 function mapStateToProps(state: AppState) {
@@ -20,7 +19,7 @@ function mapStateToProps(state: AppState) {
 
 const connector = connect(mapStateToProps, { listQueuesAsync });
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     paddingTop: theme.spacing(2),
   },
@@ -47,8 +46,9 @@ const validStatus = [
 const defaultStatus = "active";
 
 function TasksView(props: ConnectedProps<typeof connector>) {
-  const classes = useStyles();
-  const { qname } = useParams<QueueDetailsRouteParams>();
+  const { classes } = useStyles();
+  const params = useParams();
+  const qname = params.qname as string;
   const query = useQuery();
   let selected = query.get("status");
   if (!selected || !validStatus.includes(selected)) {
@@ -63,13 +63,13 @@ function TasksView(props: ConnectedProps<typeof connector>) {
   return (
     <Container maxWidth="lg">
       <Grid container spacing={0} className={classes.container}>
-        <Grid item xs={12} className={classes.breadcrumbs}>
+        <Grid xs={12} className={classes.breadcrumbs}>
           <QueueBreadCrumb queues={props.queues} queueName={qname} />
         </Grid>
-        <Grid item xs={12} className={classes.banner}>
+        <Grid xs={12} className={classes.banner}>
           <QueueInfoBanner qname={qname} />
         </Grid>
-        <Grid item xs={12} className={classes.tasksTable}>
+        <Grid xs={12} className={classes.tasksTable}>
           <TasksTableContainer queue={qname} selected={selected} />
         </Grid>
       </Grid>

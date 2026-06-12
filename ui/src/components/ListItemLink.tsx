@@ -1,21 +1,21 @@
-import React, { ReactElement } from "react";
-import clsx from "clsx";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import Tooltip from "@material-ui/core/Tooltip";
-import { makeStyles } from "@material-ui/core/styles";
+import { ReactElement, forwardRef, useMemo } from "react";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Tooltip from "@mui/material/Tooltip";
+import { makeStyles } from "tss-react/mui";
 import {
-  useRouteMatch,
-  Link as RouterLink,
+  Link,
+  useLocation,
   LinkProps as RouterLinkProps,
 } from "react-router-dom";
 import { isDarkTheme } from "../theme";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   listItem: {
     borderTopRightRadius: "24px",
     borderBottomRightRadius: "24px",
+    color: theme.palette.text.primary,
   },
   selected: {
     backgroundColor: isDarkTheme(theme)
@@ -41,41 +41,43 @@ interface Props {
   icon?: ReactElement;
 }
 
-// Note: See https://material-ui.com/guides/composition/ for details.
+const CustomLink = forwardRef<HTMLAnchorElement, RouterLinkProps>(
+  function CustomLink(itemProps, ref) {
+    return <Link ref={ref} {...itemProps} />;
+  },
+);
+
 function ListItemLink(props: Props): ReactElement {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const { icon, primary, to } = props;
-  const isMatch = useRouteMatch({
-    path: to,
-    strict: true,
-    sensitive: true,
-    exact: true,
-  });
-  const renderLink = React.useMemo(
-    () =>
-      React.forwardRef<any, Omit<RouterLinkProps, "to">>((itemProps, ref) => (
-        <RouterLink to={to} ref={ref} {...itemProps} />
-      )),
-    [to]
-  );
+  const location = useLocation();
+
+  const isMatch = useMemo(() => {
+    return location.pathname === to || location.pathname === to + "/";
+  }, [location.pathname, to]);
+
   return (
     <li>
       <Tooltip title={primary} placement="right">
         <ListItem
-          button
-          component={renderLink}
-          className={clsx(classes.listItem, isMatch && classes.selected)}
+          component={CustomLink}
+          to={to}
+          className={
+            isMatch
+              ? `${classes.listItem} ${classes.selected}`
+              : classes.listItem
+          }
         >
           {icon && (
-            <ListItemIcon className={clsx(isMatch && classes.selectedIcon)}>
+            <ListItemIcon
+              className={isMatch ? classes.selectedIcon : undefined}
+            >
               {icon}
             </ListItemIcon>
           )}
           <ListItemText
             primary={primary}
-            classes={{
-              primary: isMatch ? classes.selectedText : undefined,
-            }}
+            className={isMatch ? classes.selectedText : undefined}
           />
         </ListItem>
       </Tooltip>

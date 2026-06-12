@@ -1,16 +1,15 @@
-import React, { useMemo, useEffect } from "react";
+import { useMemo, useEffect } from "react";
 import { connect, ConnectedProps } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import Alert from "@material-ui/lab/Alert";
-import AlertTitle from "@material-ui/lab/AlertTitle";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { makeStyles } from "tss-react/mui";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import QueueBreadCrumb from "../components/QueueBreadcrumb";
 import { AppState } from "../store";
 import { getTaskInfoAsync } from "../actions/tasksActions";
@@ -18,7 +17,12 @@ import { TaskDetailsRouteParams } from "../paths";
 import { usePolling } from "../hooks";
 import { listQueuesAsync } from "../actions/queuesActions";
 import SyntaxHighlighter from "../components/SyntaxHighlighter";
-import { durationFromSeconds, stringifyDuration, timeAgo, prettifyPayload } from "../utils";
+import {
+  durationFromSeconds,
+  stringifyDuration,
+  timeAgo,
+  prettifyPayload,
+} from "../utils";
 
 function mapStateToProps(state: AppState) {
   return {
@@ -35,7 +39,7 @@ const connector = connect(mapStateToProps, {
   listQueuesAsync,
 });
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     paddingTop: theme.spacing(2),
   },
@@ -70,10 +74,12 @@ const useStyles = makeStyles((theme) => ({
 type Props = ConnectedProps<typeof connector>;
 
 function TaskDetailsView(props: Props) {
-  const classes = useStyles();
-  const { qname, taskId } = useParams<TaskDetailsRouteParams>();
+  const { classes } = useStyles();
+  const params = useParams();
+  const qname = params.qname as string;
+  const taskId = params.taskId as string;
   const { getTaskInfoAsync, pollInterval, listQueuesAsync, taskInfo } = props;
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const fetchTaskInfo = useMemo(() => {
     return () => {
@@ -91,14 +97,14 @@ function TaskDetailsView(props: Props) {
   return (
     <Container maxWidth="lg" className={classes.container}>
       <Grid container spacing={0}>
-        <Grid item xs={12} className={classes.breadcrumbs}>
+        <Grid xs={12} className={classes.breadcrumbs}>
           <QueueBreadCrumb
             queues={props.queues}
             queueName={qname}
             taskId={taskId}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid xs={12} md={6}>
           {props.error ? (
             <Alert severity="error" className={classes.alert}>
               <AlertTitle>Error</AlertTitle>
@@ -277,7 +283,7 @@ function TaskDetailsView(props: Props) {
                         <Typography>
                           {taskInfo.ttl_seconds > 0
                             ? `${stringifyDuration(
-                                durationFromSeconds(taskInfo.ttl_seconds)
+                                durationFromSeconds(taskInfo.ttl_seconds),
                               )} left`
                             : "expired"}
                         </Typography>
@@ -289,10 +295,7 @@ function TaskDetailsView(props: Props) {
             </Paper>
           )}
           <div className={classes.footer}>
-            <Button
-              startIcon={<ArrowBackIcon />}
-              onClick={() => history.goBack()}
-            >
+            <Button startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)}>
               Go Back
             </Button>
           </div>
